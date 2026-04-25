@@ -1,0 +1,11 @@
+{
+  "name": "movie-api",
+  "version": "1.0.0",
+  "description": "A simple REST API for managing movies, built with Node.js core modules and JSON file storage.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Samuel Girma",
+  "license": "ISC"
+}
