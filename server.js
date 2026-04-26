@@ -26,6 +26,10 @@ const server = http.createServer((req, res) => {
         else if (req.method === 'PUT' && req.url === '/api/update-movie') {
             await updateMovie(req, res, body);
         }
+        else if (req.method === 'DELETE' && req.url.startsWith('/api/delete-movie/')) {
+            const id = req.url.split('/')[3];
+            await deleteMovie(req, res, id);
+        }
         else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Route not found' }));
@@ -80,6 +84,23 @@ async function updateMovie(req, res, body) {
         fs.writeFileSync(filePath, JSON.stringify(movies, null, 2));
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(movies[index]));
+    } else {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Movie not found' }));
+    }
+}
+
+async function deleteMovie(req, res, id) {
+    const data = fs.readFileSync(filePath, 'utf-8');
+    let movies = JSON.parse(data);
+
+    const index = movies.findIndex(m => m.id === parseInt(id));
+
+    if (index !== -1) {
+        const deleted = movies.splice(index, 1);
+        fs.writeFileSync(filePath, JSON.stringify(movies, null, 2));
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Movie deleted', movie: deleted[0] }));
     } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'Movie not found' }));
